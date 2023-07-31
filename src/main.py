@@ -1,44 +1,32 @@
-import pandas as pd
-from tree_detect import predict
-from shapely.geometry import Polygon
-from constants import mt_wellington_bounding_box
-from utils.geo import tiles_in_polygon
 import os
+import concurrent.futures
+import pandas as pd
+from tree_detect import predict_tile_img
+from shapely.geometry import Polygon
+from constants import MT_WELLINGTON_BOUNDING_BOX,API_KEY
+from utils.geo import tiles_in_polygon,point_in_tile_to_latlon
+from utils.mapbox import batch_fetch_tile_image
 
-# Mapbox API Key
-API_KEY = os.environ.get('API_MAPBOX_KEY')
+# Build our Shapely polygon from our BOUNDING_BOX
+polygon = Polygon(MT_WELLINGTON_BOUNDING_BOX)
 
-# Yaizu Court Bounding Box
-BOUNDING_BOX = (147.2777, -42.8645, 147.279, -42.8639)
+# Find all the tiles within our chosen area
+tiles = tiles_in_polygon(polygon, 18)[:3]
 
-YAIZU_TILE = (18, 238316, 165684)
+# Fetch missing images
+batch_fetch_tile_image(tiles, 18, API_KEY)
 
-# Fetch the satellite image
-# fetch_tile_image(*BOUNDING_BOX, 1200, 800, 2, API_KEY, 'images/test.jpg')
-# fetch_tile_image(*YAIZU_TILE, API_KEY, 'images/test.jpg')
+# Get a list of all files in the 'images' directory
+image_files = os.listdir('images')
 
-polygon = Polygon(mt_wellington_bounding_box)
+# Create a ThreadPoolExecutor
+with concurrent.futures.ThreadPoolExecutor() as executor:
+    # Use list comprehension to create a list of futures
+    futures = [executor.submit(predict_tile_img, image_file) for image_file in image_files]
+    
+    # Collate the results into a single array
+    results = [f.result() for f in concurrent.futures.as_completed(futures)]
 
-tiles = tiles_in_polygon(polygon, 18)
+    merged_results = pd.concat(results, ignore_index=True)
 
-print(len(tiles))
-
-# Count the trees!
-# result = predict('images/test.jpg')
-
-# # Calculate the center points
-# result['x_center'] = (result['xmin'] + result['xmax']) / 2 
-# result['y_center'] = (result['ymin'] + result['ymax']) / 2 
-# result['x_norm'] = result['x_center'] / 512
-# result['y_norm'] = result['y_center'] / 512
-
-
-# def process_row(row):
-#     lat, lon = point_in_tile_to_latlon(238316, 165684, row['x_norm'], row['y_norm'], 18)
-#     return pd.Series([lat, lon])
-
-# result[['lat', 'lon']] = result.apply(process_row, axis=1)
-
-# print(result[['lat','lon']])
-
-
+print(merged_results)

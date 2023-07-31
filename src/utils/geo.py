@@ -17,6 +17,9 @@ def latlon_to_tile(lat, lon, zoom):
     ytile = int((1.0 - math.log(math.tan(math.radians(lat)) + 1 / math.cos(math.radians(lat))) / math.pi) / 2.0 * n)
     return (xtile, ytile)
 
+# Note: This logic grabs the tiles that intersect our polygon. This means that the only a portion of the tile is
+# present within the polygon. This needs to be updated to use something more reliable like:
+# https://towardsdatascience.com/geofencing-with-quadkeys-7c5b9866ff98
 def tiles_in_polygon(polygon, zoom):
     minx, miny, maxx, maxy = polygon.bounds
     min_tile_x, min_tile_y = latlon_to_tile(miny, minx, zoom)  # Note the swapped order

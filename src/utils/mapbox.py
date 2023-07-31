@@ -1,6 +1,6 @@
 import time
 import requests
-
+import os
 from concurrent.futures import ThreadPoolExecutor
 
 def fetch_tile_image(zoom,x,y,access_token,output_file,scale=2):
@@ -14,7 +14,7 @@ def fetch_tile_image(zoom,x,y,access_token,output_file,scale=2):
         print(f"Failed to download image, status code: {response.status_code}")
         print(f"Response: {response.text}")
 
-def batch_fetch_tile_image(tiles):
+def batch_fetch_tile_image(tiles, zoom, API_KEY):
     # Define the maximum number of concurrent requests
     MAX_WORKERS = 10
 
@@ -25,9 +25,13 @@ def batch_fetch_tile_image(tiles):
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         # For each tile in tiles
         for i, tile in enumerate(tiles):
-            # Fetch the tile image
-            executor.submit(fetch_tile_image, *tile, API_KEY, f'images/tile_{i}.jpg')
+               # Define the output file name
+            output_file = f'images/tile_{tile[0]}_{tile[1]}_{zoom}.jpg'
             
+            # Check if the file already exists
+            if not os.path.isfile(output_file):
+                # Fetch the tile image
+                executor.submit(fetch_tile_image, zoom, *tile, API_KEY, output_file)
             # Delay between requests
             time.sleep(DELAY)
 
