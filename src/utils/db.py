@@ -1,25 +1,23 @@
 import os
-import psycopg2
 
-POSTGRES_URL = os.environ.get("API_NEON_URL")
+from supabase import create_client, Client
 
-# Connect to the PostgreSQL database
-conn = psycopg2.connect(POSTGRES_URL)
+url: str = os.environ.get("API_SUPABASE_URL")
+key: str = os.environ.get("API_SUPABASE_SERVICE_KEY")
+supabase: Client = create_client(url, key)
 
-# Create a cursor object
-cur = conn.cursor()
+bucket_name = "TEST"
+destination = "tile_238106_165585_18.jpg"
 
-# Execute SQL commands to retrieve the current time and version from PostgreSQL
-cur.execute("SELECT NOW();")
-time = cur.fetchone()[0]
+bucket_exists = supabase.storage.get_bucket(bucket_name)
+if not bucket_exists:
+    supabase.storage.create_bucket(bucket_name)
 
-cur.execute("SELECT version();")
-version = cur.fetchone()[0]
+file_list = supabase.storage.from_(bucket_name).list()
 
-# Close the cursor and connection
-cur.close()
-conn.close()
+if destination not in [file["name"] for file in file_list]:
+    print(f"File {destination} not found in the bucket.")
 
-# Print the results
-print("Current time:", time)
-print("PostgreSQL version:", version)
+supabase.storage.from_(bucket_name).upload(
+    destination, "images/tile_238106_165585_18.jpg"
+)
