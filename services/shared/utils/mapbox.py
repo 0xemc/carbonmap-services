@@ -16,7 +16,7 @@ def fetch_tile_image(zoom, x, y, access_token, output_file, scale=2):
         print(f"Response: {response.text}")
 
 
-def batch_fetch_tile_image(tiles, zoom, API_KEY, workers=10):
+def batch_fetch_tile_image(tiles, zoom, API_KEY, workers=10) -> list[str]:
     # Define the maximum number of concurrent requests
     MAX_WORKERS = workers
 

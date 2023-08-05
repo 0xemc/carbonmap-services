@@ -3,7 +3,6 @@ from services.shared.constants import (
 )
 from services.shared.utils.geo import tiles_in_polygon
 from services.shared.utils.mapbox import batch_fetch_tile_image
-from services.shared.utils.db import batch_store
 from shapely.geometry import Polygon
 
 
@@ -24,7 +23,7 @@ def fetch(bounding_box: BoundingBox, resolution=18, limit=3):
     files = batch_fetch_tile_image(tiles, resolution, API_KEY)
 
     # Create a list of FileDict from the above files
-    # file_dicts = [{"source": file["url"], "destination": file["path"]} for file in files]
+    file_dicts = [{"source": file, "destination": file["path"]} for file in files]
 
     # # Store the files
     # batch_store(bounding_box.name, file_dicts)
