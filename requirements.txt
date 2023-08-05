@@ -1,2 +1,3 @@
 pandas
 shapely
+requests
