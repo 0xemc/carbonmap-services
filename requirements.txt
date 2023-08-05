@@ -1,3 +1,4 @@
 pandas
 shapely
 requests
+supabase
