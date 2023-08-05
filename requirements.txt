@@ -1,8 +1,0 @@
-numpy
-pandas
-shapely
-pyproj
-deepforest
-matplotlib
-requests
-argparse

@@ -7,7 +7,7 @@ key: str = os.environ.get("API_SUPABASE_SERVICE_KEY")
 supabase: Client = create_client(url, key)
 
 bucket_name = "TEST"
-destination = "tile_238106_165585_18.jpg"
+destination = "/tmp/tile_238106_165585_18.jpg"
 
 bucket_exists = supabase.storage.get_bucket(bucket_name)
 if not bucket_exists:
@@ -19,5 +19,5 @@ if destination not in [file["name"] for file in file_list]:
     print(f"File {destination} not found in the bucket.")
 
 supabase.storage.from_(bucket_name).upload(
-    destination, "images/tile_238106_165585_18.jpg"
+    destination, "/tmp/images/tile_238106_165585_18.jpg"
 )
