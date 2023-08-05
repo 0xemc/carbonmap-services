@@ -8,6 +8,7 @@ class handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "text/plain")
         self.end_headers()
-        message = fetch(NEW_NORFOLK_BOUNDING_BOX)
+        message = fetch({"shape": NEW_NORFOLK_BOUNDING_BOX, "name": "New Norfolk"})
+
         self.wfile.write(f"Hello, world! {message}".encode("utf-8"))
         return
