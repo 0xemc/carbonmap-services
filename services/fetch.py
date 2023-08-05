@@ -1,7 +1,7 @@
 from services.shared.constants import (
     API_KEY,
 )
-
+from services.shared.utils.geo import tiles_in_polygon
 from shapely.geometry import Polygon
 
 # from shared.utils.geo import tiles_in_polygon
@@ -14,9 +14,9 @@ def fetch(bounding_box: list[list[float]], resolution=18, limit=3):
     polygon = Polygon(bounding_box)
 
     # Find all the tiles within our chosen area
-    # tiles = tiles_in_polygon(polygon, resolution)[:limit]
+    tiles = tiles_in_polygon(polygon, resolution)[:limit]
 
     # Fetch missing images
     # batch_fetch_tile_image(tiles, resolution, API_KEY)
 
-    return "Success"
+    return tiles
