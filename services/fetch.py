@@ -1,4 +1,4 @@
-from shared.constants import (
+from services.shared.constants import (
     API_KEY,
 )
 
