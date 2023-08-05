@@ -1,10 +1,9 @@
 import os
-import h3
 import re
 import matplotlib.pyplot as plt
 import pandas as pd
 from deepforest import main
-from utils.geo import point_in_tile_to_latlon
+from services.shared.utils.geo import point_in_tile_to_latlon
 from geoalchemy2 import WKTElement
 
 
@@ -27,20 +26,19 @@ def process_row(row):
 # This function relies on the naming format of tile_x_y_zoom.jpg in order to get the tile details
 def predict_tile_img(image_file):
     if image_file.endswith(".jpg"):
-        file_path = os.path.join("images", image_file)
-
         # Extract the tile x and y from the image_file path
-        match = re.search(r"tile_(\d+)_(\d+)_\d+.jpg", image_file)
+        match = re.search(r".*\/(\d+)_(\d+)_(\d+).jpg", image_file)
 
         if not match:
             raise ValueError(
-                "File format did not match as expected. Expected format: 'tile_x_y_zoom.jpg'"
+                "File format did not match as expected. Expected format: 'tile_x_y_zoom.jpg'",
+                image_file,
             )
 
-        tile_x, tile_y = map(int, match.groups())
+        tile_x, tile_y, zoom = map(int, match.groups())
 
         # Count the trees!
-        result = predict(file_path)
+        result = predict(image_file)
 
         # Calculate the center points
         result["x_center"] = (result["xmin"] + result["xmax"]) / 2
@@ -50,7 +48,7 @@ def predict_tile_img(image_file):
 
         # Define process_row as a lambda function
         add_lat_lng = lambda row: pd.Series(
-            point_in_tile_to_latlon(tile_x, tile_y, row["x_norm"], row["y_norm"], 18)
+            point_in_tile_to_latlon(tile_x, tile_y, row["x_norm"], row["y_norm"], zoom)
         )
 
         # Convert lat and lon to a Point geometry (this assumes lon and lat are in degrees)

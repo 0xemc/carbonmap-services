@@ -1,11 +1,7 @@
 from http.server import BaseHTTPRequestHandler
 from services.fetch import fetch
 from services.shared.constants import NEW_NORFOLK_BOUNDING_BOX
-from services.fetch import BoundingBox
 from urllib.parse import urlparse, parse_qs
-
-
-bounding_box = BoundingBox(name="NewNorfolk", shape=NEW_NORFOLK_BOUNDING_BOX)
 
 
 class handler(BaseHTTPRequestHandler):
