@@ -1,6 +1,10 @@
 from http.server import BaseHTTPRequestHandler
 from services.fetch import fetch
 from services.shared.constants import NEW_NORFOLK_BOUNDING_BOX
+from services.fetch import BoundingBox
+
+
+bounding_box = BoundingBox(name="NewNorfolk", shape=NEW_NORFOLK_BOUNDING_BOX)
 
 
 class handler(BaseHTTPRequestHandler):
@@ -8,7 +12,6 @@ class handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "text/plain")
         self.end_headers()
-        message = fetch({"shape": NEW_NORFOLK_BOUNDING_BOX, "name": "New Norfolk"})
-
+        message = fetch(bounding_box)
         self.wfile.write(f"Hello, world! {message}".encode("utf-8"))
         return

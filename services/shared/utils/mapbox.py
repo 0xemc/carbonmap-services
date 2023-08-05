@@ -16,7 +16,9 @@ def fetch_tile_image(zoom, x, y, access_token, output_file, scale=2):
         print(f"Response: {response.text}")
 
 
-def batch_fetch_tile_image(tiles, zoom, API_KEY, workers=10) -> list[str]:
+def batch_fetch_tile_image(
+    tiles, zoom, API_KEY, output_dir="/tmp", workers=10
+) -> list[str]:
     # Define the maximum number of concurrent requests
     MAX_WORKERS = workers
 
@@ -31,17 +33,17 @@ def batch_fetch_tile_image(tiles, zoom, API_KEY, workers=10) -> list[str]:
         # For each tile in tiles
         for i, tile in enumerate(tiles):
             # Define the output file name
-            output_file = f"tmp/tile_{tile[0]}_{tile[1]}_{zoom}.jpg"
+            output_file = f"{output_dir}/{tile[0]}_{tile[1]}_{zoom}.jpg"
 
             # Check if the file already exists
             if not os.path.isfile(output_file):
                 # Fetch the tile image
                 executor.submit(fetch_tile_image, zoom, *tile, API_KEY, output_file)
-                # Add the file path to the list
-                file_paths.append(output_file)
+                # Delay between requests
+                time.sleep(DELAY)
 
-            # Delay between requests
-            time.sleep(DELAY)
+            # Add the file path to the list
+            file_paths.append(output_file)
 
     # Return the list of file paths
     return file_paths
