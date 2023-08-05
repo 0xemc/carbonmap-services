@@ -3,3 +3,4 @@ __pycache__
 *$py.class
 .vscode
 .vercel
+.DS_Store
