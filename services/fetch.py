@@ -23,9 +23,6 @@ def fetch(bounding_box: BoundingBox, resolution=18, limit=100):
     # Find all the tiles within our chosen area
     tiles = tiles_in_polygon(polygon, resolution)[:limit]
 
-    print(tiles)
-    return
-
     # Fetch missing images
     files = batch_fetch_tile_image(tiles, resolution, API_KEY)
 

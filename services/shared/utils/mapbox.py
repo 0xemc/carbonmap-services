@@ -17,13 +17,13 @@ def fetch_tile_image(zoom, x, y, access_token, output_file, scale=2):
 
 
 def batch_fetch_tile_image(
-    tiles, zoom, API_KEY, output_dir="/tmp", workers=10
+    tiles, zoom, API_KEY, output_dir="/tmp", workers=16
 ) -> list[str]:
     # Define the maximum number of concurrent requests
     MAX_WORKERS = workers
 
     # Define the delay between requests (in seconds)
-    DELAY = 1
+    DELAY = 0.1
 
     # Create a ThreadPoolExecutor
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
