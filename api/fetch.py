@@ -9,9 +9,13 @@ bounding_box = BoundingBox(name="NewNorfolk", shape=NEW_NORFOLK_BOUNDING_BOX)
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        self.send_response(200)
+        try:
+            fetch(bounding_box)
+            self.send_response(200)
+            self.wfile.write(f"Success".encode("utf-8"))
+        except Exception as e:
+            self.send_response(500)
+            self.wfile.write(str(e).encode("utf-8"))
         self.send_header("Content-type", "text/plain")
         self.end_headers()
-        message = fetch(bounding_box)
-        self.wfile.write(f"Hello, world! {message}".encode("utf-8"))
         return
