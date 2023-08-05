@@ -16,12 +16,15 @@ class BoundingBox(TypedDict):
 
 
 # ------ Fetch Tile Images ------ #
-def fetch(bounding_box: BoundingBox, resolution=18, limit=3):
+def fetch(bounding_box: BoundingBox, resolution=18, limit=100):
     # Build our Shapely polygon from our BOUNDING_BOX
     polygon = Polygon(bounding_box["shape"])
 
     # Find all the tiles within our chosen area
     tiles = tiles_in_polygon(polygon, resolution)[:limit]
+
+    print(tiles)
+    return
 
     # Fetch missing images
     files = batch_fetch_tile_image(tiles, resolution, API_KEY)
