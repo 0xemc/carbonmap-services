@@ -25,6 +25,9 @@ def batch_fetch_tile_image(tiles, zoom, API_KEY, workers=10):
 
     # Create a ThreadPoolExecutor
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        # Initialize an empty list to store the file paths
+        file_paths = []
+
         # For each tile in tiles
         for i, tile in enumerate(tiles):
             # Define the output file name
@@ -34,8 +37,14 @@ def batch_fetch_tile_image(tiles, zoom, API_KEY, workers=10):
             if not os.path.isfile(output_file):
                 # Fetch the tile image
                 executor.submit(fetch_tile_image, zoom, *tile, API_KEY, output_file)
+                # Add the file path to the list
+                file_paths.append(output_file)
+
             # Delay between requests
             time.sleep(DELAY)
+
+    # Return the list of file paths
+    return file_paths
 
 
 def fetch_static_image(
