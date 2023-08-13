@@ -18,11 +18,6 @@ def show(data):
     plt.show()
 
 
-def process_row(row):
-    lat, lon = point_in_tile_to_latlon(238316, 165684, row["x_norm"], row["y_norm"], 18)
-    return pd.Series([lat, lon])
-
-
 # This function relies on the naming format of tile_x_y_zoom.jpg in order to get the tile details
 def predict_tile_img(image_file):
     if image_file.endswith(".jpg"):
@@ -40,7 +35,16 @@ def predict_tile_img(image_file):
         # Count the trees!
         result = predict(image_file)
 
+        if result is None:
+            raise ValueError("Prediction failed, result is None")
+
+        if result[["xmin", "xmax", "ymin", "ymax"]].isnull().any().any():
+            raise ValueError(
+                "Invalid result: xmin, xmax, ymin, ymax should not be None", result
+            )
+
         # Calculate the center points
+        ## @NOTE: This relies on the assumption that we are fetching at 2x scale
         result["x_center"] = (result["xmin"] + result["xmax"]) / 2
         result["y_center"] = (result["ymin"] + result["ymax"]) / 2
         result["x_norm"] = result["x_center"] / 512
