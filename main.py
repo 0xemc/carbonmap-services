@@ -4,7 +4,7 @@ from services.shared.constants import NEW_NORFOLK_BOUNDING_BOX
 from services.detect import detect
 from services.shared.constants import POSTGRES_URL
 from services.shared.utils.date import todays_date
-from services.shared.utils.geo import geojson_to_bounding_box
+from services.shared.utils.geo import kml_to_gpd
 from geoalchemy2 import Geometry
 from sqlalchemy import (
     create_engine,
@@ -21,8 +21,6 @@ LIMIT = 500
 TODAY = todays_date()
 
 metadata = MetaData()
-
-bounding_box = geojson_to_bounding_box("./KML_812.boundary.geojson")
 
 
 files = fetch(geo_shape=bounding_box, resolution=RESOLUTION, limit=LIMIT)
