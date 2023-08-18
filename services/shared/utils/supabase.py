@@ -56,6 +56,12 @@ def download_file(bucket: str, file: str, output_dir: str):
         f.write(res)
 
 
+def insert(table: str, row):
+    response = supabase.table(table).insert(row).execute()
+    if response:
+        print(response)
+
+
 # def batch_retrieve(bucket: str, file_list: List[FileDict], output_dir: str):
 #     # Grab the existing files
 #     existing_files = os.listdir(output_dir)
