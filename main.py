@@ -4,6 +4,7 @@ from services.shared.constants import NEW_NORFOLK_BOUNDING_BOX
 from services.detect import detect
 from services.shared.constants import POSTGRES_URL
 from services.shared.utils.date import todays_date
+from services.shared.utils.geo import geojson_to_bounding_box
 from geoalchemy2 import Geometry
 from sqlalchemy import (
     create_engine,
@@ -19,19 +20,19 @@ RESOLUTION = 18
 LIMIT = 500
 TODAY = todays_date()
 
-files = fetch(geo_shape=NEW_NORFOLK_BOUNDING_BOX, resolution=RESOLUTION, limit=LIMIT)
+metadata = MetaData()
+
+bounding_box = geojson_to_bounding_box("./KML_812.boundary.geojson")
 
 
-# upload(
-#     bucket=f"NewNorfolk", destination_dir=f"{todays_date()}-{RESOLUTION}", files=files
-# )
+files = fetch(geo_shape=bounding_box, resolution=RESOLUTION, limit=LIMIT)
+
+# upload(bucket=f"KML_812", destination_dir=f"{todays_date()}-{RESOLUTION}", files=files)
 
 # files = download(bucket="NewNorfolk", dir="06-08-2023")
 results = detect(files)
 
-
 #  ----- Write to DB ------
-metadata = MetaData()
 
 # Define the table with the composite primary key of lat,lon to avoid double counting
 table = Table(
@@ -47,6 +48,8 @@ table = Table(
 results["lat"] = results["lat"].round(6)
 results["lon"] = results["lon"].round(6)
 results["date"] = TODAY
+
+print(results)
 
 engine = create_engine(POSTGRES_URL)
 

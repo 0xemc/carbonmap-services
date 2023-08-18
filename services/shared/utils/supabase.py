@@ -38,15 +38,14 @@ def batch_upload_file(bucket: str, destination_dir: str, file_list: List[FileDic
         destination = file["destination"]
 
         # Check for existing file
-        if destination in existing_files:
+        if destination not in existing_files:
+            # Start a new thread to upload the file
+            try:
+                upload_file(bucket, source, f"{destination_dir}/{destination}")
+            except Exception as e:
+                print(f"An error occurred while uploading {destination}: {e}")
+        else:
             print(f"File {destination} found in the bucket.")
-            continue
-
-        # Start a new thread to upload the file
-        try:
-            upload_file(bucket, source, f"{destination_dir}/{destination}")
-        except Exception as e:
-            print(f"An error occurred while uploading {destination}: {e}")
 
     return "Success"
 

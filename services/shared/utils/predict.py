@@ -36,7 +36,8 @@ def predict_tile_img(image_file):
         result = predict(image_file)
 
         if result is None:
-            raise ValueError("Prediction failed, result is None")
+            print("Error: Prediction result is None.")
+            return None
 
         if result[["xmin", "xmax", "ymin", "ymax"]].isnull().any().any():
             raise ValueError(
