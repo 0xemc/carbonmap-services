@@ -1,6 +1,6 @@
 import concurrent.futures
 import pandas as pd
-from services.shared.utils.predict import predict_tile_img
+from shared.utils.predict import predict_tile_img
 
 
 def detect(image_files: list[str]) -> pd.DataFrame:

@@ -7,3 +7,4 @@ pandas==2.0.3
 pykml==0.2.0
 Requests==2.31.0
 Shapely==2.0.1
+Supabase==1.04

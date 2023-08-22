@@ -4,4 +4,4 @@ __pycache__
 .vscode
 .vercel
 .DS_Store
-carbonmapenv
+venv

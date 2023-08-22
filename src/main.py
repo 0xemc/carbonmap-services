@@ -1,13 +1,13 @@
 from services.fetch import fetch
 from services.detect import detect
-from services.shared.constants import POSTGRES_URL
-from services.shared.utils.date import todays_date
+from shared.constants import POSTGRES_URL
+from shared.utils.date import todays_date
 from geoalchemy2 import Geometry
 from sqlalchemy import (
     create_engine,
     MetaData,
 )
-from services.shared.utils.supabase import db_client
+from shared.utils.supabase import db_client
 
 #  ----- Config------ #
 RESOLUTION = 18

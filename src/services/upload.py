@@ -1,5 +1,5 @@
 import os
-from services.shared.utils.supabase import batch_upload_file, FileDict
+from shared.utils.supabase import batch_upload_file, FileDict
 
 
 def upload(bucket: str, destination_dir: str, files: list[str]):

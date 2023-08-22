@@ -4,10 +4,10 @@ from shapely.geometry import Polygon
 from typing import TypedDict, List
 from datetime import datetime
 
-from services.shared.constants import API_KEY
-from services.shared.utils.geo import tiles_in_polygon
-from services.shared.utils.mapbox import batch_fetch_tile_image
-from services.shared.utils.supabase import batch_upload_file, FileDict
+from shared.constants import API_KEY
+from shared.utils.geo import tiles_in_polygon
+from shared.utils.mapbox import batch_fetch_tile_image
+from shared.utils.supabase import batch_upload_file, FileDict
 
 
 # ------ Fetch Tile Images ------ #

@@ -2,7 +2,7 @@ import math
 from shapely.geometry import box
 import geopandas as gpd
 from shapely.ops import unary_union
-from services.shared.constants import BoundingBox
+from shared.constants import BoundingBox
 from pykml import parser
 import fiona
 

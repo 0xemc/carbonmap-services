@@ -3,13 +3,13 @@ import re
 import matplotlib.pyplot as plt
 import pandas as pd
 from deepforest import main
-from services.shared.utils.geo import point_in_tile_to_latlon
+from shared.utils.geo import point_in_tile_to_latlon
 from geoalchemy2 import WKTElement
 
 
 def predict(image_path, plot=False):
     model = main.deepforest()
-    model.use_release(check_release=False)
+    model.use_release()
     return model.predict_image(path=image_path, return_plot=plot)
 
 

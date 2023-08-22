@@ -1,10 +1,10 @@
 import os
-from services.shared.utils.geo import (
+from shared.utils.geo import (
     kml_to_gpd,
     extract_boundaries,
     to_bounding_box,
 )
-from services.shared.utils.supabase import upload_file, db_client
+from shared.utils.supabase import upload_file, db_client
 
 file_path = "~/Downloads/KML_812.kml"
 
