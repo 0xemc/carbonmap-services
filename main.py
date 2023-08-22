@@ -1,10 +1,7 @@
 from services.fetch import fetch
-from services.upload import upload
-from services.shared.constants import NEW_NORFOLK_BOUNDING_BOX
 from services.detect import detect
 from services.shared.constants import POSTGRES_URL
 from services.shared.utils.date import todays_date
-from services.shared.utils.geo import kml_to_gpd
 from geoalchemy2 import Geometry
 from sqlalchemy import (
     create_engine,
@@ -14,17 +11,17 @@ from sqlalchemy import (
     Float,
     PrimaryKeyConstraint,
 )
-
+from services.shared.utils.supabase import db_client
 
 RESOLUTION = 18
 LIMIT = 500
 TODAY = todays_date()
-
 metadata = MetaData()
 
+response = db_client.table("segments").select("*").eq("id", "KML_812").execute()
 
+bounding_box = response.data[0]["data"]
 files = fetch(geo_shape=bounding_box, resolution=RESOLUTION, limit=LIMIT)
-
 # upload(bucket=f"KML_812", destination_dir=f"{todays_date()}-{RESOLUTION}", files=files)
 
 # files = download(bucket="NewNorfolk", dir="06-08-2023")

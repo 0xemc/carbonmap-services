@@ -1,4 +1,9 @@
-pandas
-shapely
-requests
-supabase
+deepforest==1.2.7
+Fiona==1.9.4.post1
+geoalchemy2==0.14.1
+geopandas==0.13.2
+matplotlib==3.7.2
+pandas==2.0.3
+pykml==0.2.0
+Requests==2.31.0
+Shapely==2.0.1

@@ -2,21 +2,19 @@ import os
 from typing import List, TypedDict
 from supabase import create_client, Client
 
-from concurrent.futures import ThreadPoolExecutor
-
 url: str = os.environ.get("API_SUPABASE_URL")
 key: str = os.environ.get("API_SUPABASE_SERVICE_KEY")
 
-supabase: Client = create_client(url, key)
+db_client: Client = create_client(url, key)
 
 
 def upload_file(bucket: str, source: str, destination: str):
-    bucket_list = [b.name for b in supabase.storage.list_buckets()]
+    bucket_list = [b.name for b in db_client.storage.list_buckets()]
     if bucket not in bucket_list:
-        supabase.storage.create_bucket(bucket)
+        db_client.storage.create_bucket(bucket)
         print(f"Created bucket with name {bucket}")
 
-    supabase.storage.from_(bucket).upload(destination, source)
+    db_client.storage.from_(bucket).upload(destination, source)
     print(f"Uploaded {source} to {destination}")
 
 
@@ -28,7 +26,7 @@ class FileDict(TypedDict):
 def batch_upload_file(bucket: str, destination_dir: str, file_list: List[FileDict]):
     # Grab the existing files
     existing_files = [
-        file["name"] for file in supabase.storage.from_(bucket).list(destination_dir)
+        file["name"] for file in db_client.storage.from_(bucket).list(destination_dir)
     ]
 
     # For each file in file_list
@@ -52,14 +50,8 @@ def batch_upload_file(bucket: str, destination_dir: str, file_list: List[FileDic
 
 def download_file(bucket: str, file: str, output_dir: str):
     with open(f"{output_dir}/{file}", "wb+") as f:
-        res = supabase.storage.from_(bucket).download(file)
+        res = db_client.storage.from_(bucket).download(file)
         f.write(res)
-
-
-def insert(table: str, row):
-    response = supabase.table(table).insert(row).execute()
-    if response:
-        print(response)
 
 
 # def batch_retrieve(bucket: str, file_list: List[FileDict], output_dir: str):
