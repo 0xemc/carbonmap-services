@@ -6,11 +6,13 @@ from services.shared.utils.geo import (
 )
 from services.shared.utils.supabase import upload_file, db_client
 
+file_path = "~/Downloads/KML_812.kml"
+
 # Store the KML file
-upload_file(bucket="KML_812", destination="KML_812.kml", source="./KML_812.kml")
+upload_file(bucket="KML_812", destination="KML_812.kml", source=file_path)
 
 # Convert to GeoPandas Data Frame
-gpd = kml_to_gpd("./KML_812.kml")
+gpd = kml_to_gpd(file_path)
 
 # Merge all sections and calculate the boundary
 gpd = extract_boundaries(gpd)
