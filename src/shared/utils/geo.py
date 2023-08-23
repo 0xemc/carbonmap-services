@@ -82,7 +82,7 @@ def to_bounding_box(gdf: gpd.GeoDataFrame) -> BoundingBox:
         if polygon.geom_type == "Polygon":
             exterior_coords = polygon.exterior.coords
             for coord in exterior_coords:
-                lat, lon, alt = coord
+                lat, lon = coord
                 bb.append([lat, lon])
     return bb
 
@@ -111,4 +111,9 @@ def kml_to_gpd(kml_file: str) -> gpd.GeoDataFrame:
     # Enable fiona driver
     fiona.supported_drivers["KML"] = "rw"
     gdf = gpd.read_file(kml_file, driver="KML")
+    return gdf
+
+
+def geojson_to_gpd(geo_file: str) -> gpd.GeoDataFrame:
+    gdf = gpd.read_file(geo_file)
     return gdf

@@ -41,6 +41,8 @@ def batch_fetch_tile_image(
                 executor.submit(fetch_tile_image, zoom, *tile, API_KEY, output_file)
                 # Delay between requests
                 time.sleep(DELAY)
+            else:
+                print(f"{output_file} already exists, skipping")
 
             # Add the file path to the list
             file_paths.append(output_file)
