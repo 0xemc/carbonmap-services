@@ -18,7 +18,13 @@ def fetch(geo_shape: List[List[float]], resolution=18, limit=100):
     # Find all the tiles within our chosen area
     tiles = tiles_in_polygon(polygon, resolution)[:limit]
 
-    # Fetch missing images
+    shouldContinue = input(
+        f"You are about to fetch {len(tiles)} images. Continue? (Y/n)"
+    )
+
+    if shouldContinue == "n":
+        exit
+    # # Fetch missing images
     files = batch_fetch_tile_image(tiles, resolution, API_KEY)
 
     return files
