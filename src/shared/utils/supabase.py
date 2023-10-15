@@ -1,4 +1,5 @@
 import os
+import zipfile
 from typing import List, TypedDict
 from supabase import create_client, Client
 
@@ -8,14 +9,21 @@ key: str = os.environ.get("API_SUPABASE_SERVICE_KEY")
 db_client: Client = create_client(url, key)
 
 
-def upload_file(bucket: str, source: str, destination: str):
+def upload_file(bucket: str, source: str, destination: str, force: bool = False):
     bucket_list = [b.name for b in db_client.storage.list_buckets()]
     if bucket not in bucket_list:
         db_client.storage.create_bucket(bucket)
         print(f"Created bucket with name {bucket}")
 
-    db_client.storage.from_(bucket).upload(destination, source)
-    print(f"Uploaded {source} to {destination}")
+    existing_files = [file["name"] for file in db_client.storage.from_(bucket).list()]
+
+    if force or destination not in existing_files:
+        db_client.storage.from_(bucket).upload(
+            destination, source, file_options={"x-upsert": "true" if force else "false"}
+        )
+        print(f"Uploaded {source} to {destination}")
+    else:
+        print(f"Did not upload {destination} already exists")
 
 
 class FileDict(TypedDict):
@@ -46,6 +54,12 @@ def batch_upload_file(bucket: str, destination_dir: str, file_list: List[FileDic
             print(f"File {destination} found in the bucket.")
 
     return "Success"
+
+
+def zip_files(file_paths, dest_zip):
+    with zipfile.ZipFile(dest_zip, "w") as zipf:
+        for file in file_paths:
+            zipf.write(file)
 
 
 def download_file(bucket: str, file: str, output_dir: str):
