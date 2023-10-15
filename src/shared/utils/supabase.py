@@ -2,11 +2,12 @@ import os
 import zipfile
 from typing import List, TypedDict
 from supabase import create_client, Client
+from supabase.lib.client_options import ClientOptions
 
 url: str = os.environ.get("API_SUPABASE_URL")
 key: str = os.environ.get("API_SUPABASE_SERVICE_KEY")
 
-db_client: Client = create_client(url, key)
+db_client: Client = create_client(url, key, ClientOptions(postgrest_client_timeout=180))
 
 
 def upload_file(bucket: str, source: str, destination: str, force: bool = False):
